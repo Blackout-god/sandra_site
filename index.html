@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Тест 3D Книги (100% Embed)</title>
+
+    <script type="module"
+            src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js">
+    </script>
+
+    <style>
+        /* ========================================
+           !! ВОТ ФИКС №1 (Готовим "холст" для iframe) !!
+           Мы говорим <html> и <body> занимать 100%
+           места ВНУТРИ iframe.
+         ========================================
+        */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Прячем случайные скроллбары */
+        }
+
+        @keyframes hover-effect {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+
+        model-viewer {
+            /* ======================================== */
+            /* !! ВОТ ФИКС №2 (Заполняем родителя) !! */
+            width: 100%;
+            height: 100%;
+            /* ======================================== */
+
+            cursor: pointer;
+            background-color: transparent;
+            animation: hover-effect 5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+
+<model-viewer
+        id="book-model"
+        src="final_book.glb"
+        alt="A 3D model of a book"
+        shadow-intensity="1"
+        camera-controls
+        disable-zoom
+        disable-pan
+        touch-action="pan-y"
+        interaction-prompt="none"
+        animation-name="lol_Armature|Ta...1|BaseLayer.001"
+        loop="false"
+        orientation="0 90deg 0" camera-orbit="20deg 90deg 120%"
+>
+</model-viewer>
+
+<script>
+    // --- Настройки таймеров ---
+    const DURATION_PART_1 = 1808;
+    const DURATION_PART_2 = 2109;
+    const DURATION_TOTAL = 3917;
+
+    const modelViewer = document.getElementById('book-model');
+
+    // --- Состояния ---
+    let animationStage = 0; // 0=Закрыта, 2=Пауза, 4=Открыта, 99=Процесс
+    let currentTimer = null;
+
+    // --- Логика "Клик или Потяг?" ---
+    let isDragging = false;
+    let mouseDownTime = 0;
+
+    // 1. Ждем загрузки
+    modelViewer.addEventListener('load', () => {
+        modelViewer.pause();
+        animationStage = 0;
+        console.log('Модель загружена. Состояние = 0 (Закрыта)');
+    });
+
+    // 2. Отслеживаем "потяг"
+    modelViewer.addEventListener('mousedown', () => {
+        isDragging = false;
+        mouseDownTime = Date.now();
+    });
+
+    modelViewer.addEventListener('mousemove', () => {
+        isDragging = true;
+    });
+
+    // 3. Главный обработчик (на 'mouseup')
+    modelViewer.addEventListener('mouseup', () => {
+        const timeElapsed = Date.now() - mouseDownTime;
+
+        if (isDragging === false && timeElapsed < 250) {
+            runClickAnimation();
+        } else {
+            console.log('Был "потяг" (вращение), анимация не запущена.');
+        }
+    });
+
+    // 4. Вся наша старая логика, но в отдельной функции
+    function runClickAnimation() {
+        console.log(`Клик! Текущее состояние = ${animationStage}`);
+
+        if (animationStage === 99) {
+            console.log('Анимация еще идет, клик проигнорирован.');
+            return;
+        }
+
+        if (currentTimer) {
+            clearTimeout(currentTimer);
+        }
+
+        if (animationStage === 0) { // Если книга ЗАКРЫТА
+            modelViewer.animationTimeScale = 1;
+            modelViewer.currentTime = 0;
+            modelViewer.play();
+            animationStage = 99;
+            console.log('Запуск части 1...');
+
+            currentTimer = setTimeout(() => {
+                modelViewer.pause();
+                animationStage = 2;
+                console.log('Пауза на кадре 60. Состояние = 2');
+            }, DURATION_PART_1);
+
+        } else if (animationStage === 2) { // Если книга НА ПАУЗЕ (на кадре 60)
+            modelViewer.animationTimeScale = 1;
+            modelViewer.play();
+            animationStage = 99;
+            console.log('Запуск части 2...');
+
+            currentTimer = setTimeout(() => {
+                modelViewer.pause();
+                animationStage = 4;
+                console.log('Анимация завершена. Пауза. Состояние = 4');
+            }, DURATION_PART_2);
+
+        } else if (animationStage === 4) { // Если книга ПОЛНОСТЬЮ ОТКРЫТА
+            modelViewer.animationTimeScale = -1;
+            modelViewer.play();
+            animationStage = 99;
+            console.log('Закрытие книги...');
+
+            currentTimer = setTimeout(() => {
+                modelViewer.pause();
+                animationStage = 0;
+                console.log('Книга закрыта. Пауза. Состояние = 0');
+            }, DURATION_TOTAL);
+        }
+    }
+</script>
+
+</body>
+</html>
