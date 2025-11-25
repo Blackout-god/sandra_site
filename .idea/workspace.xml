@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="30f96ec6-2a39-4736-85ae-370d761b4d2b" name="Changes" comment="">
+    <list default="true" id="30f96ec6-2a39-4736-85ae-370d761b4d2b" name="Changes" comment="Color Update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -84,8 +84,17 @@
       <updated>1762945249003</updated>
       <workItem from="1762945250087" duration="5287000" />
       <workItem from="1763549764230" duration="651000" />
-      <workItem from="1764067960796" duration="595000" />
+      <workItem from="1764067960796" duration="2093000" />
     </task>
+    <task id="LOCAL-00001" summary="Update block for mobile version">
+      <option name="closed" value="true" />
+      <created>1764068800877</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1764068800877</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -101,5 +110,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Update block for mobile version" />
+    <MESSAGE value="Color Update" />
+    <option name="LAST_COMMIT_MESSAGE" value="Color Update" />
   </component>
 </project>
